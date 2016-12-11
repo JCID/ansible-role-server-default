@@ -1,0 +1,17 @@
+packages:
+   - git
+   - git-core
+   - htop
+   - iotop
+   - jpegoptim
+   - mlocate
+   - nano
+   - ncdu
+   - optipng
+   - screen
+
+centos:
+   - gcc
+   - iptables-ipv6
+   - libcap-devel
+   - wget

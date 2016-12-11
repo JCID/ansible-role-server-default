@@ -1,0 +1,51 @@
+---
+- name:         Install standaard tools | CentOS
+  yum:          name={{ item }}
+                state=present
+  with_items:   '{{packages}}'
+  when:         ansible_distribution == "CentOS"
+
+- name:         Install CentOS tools
+  yum:          name={{ item }}
+                state=present
+  with_items:   '{{centos}}'
+  when:         ansible_distribution == "CentOS"
+
+- name:         Install standaard tools | Ubuntu
+  apt:          name={{ item }}
+                state=present
+  with_items:   '{{packages}}'
+  when:         ansible_distribution == "Ubuntu"
+
+- name:         Nano als default editor configureren
+  lineinfile:   dest=/etc/bashrc
+                line="export VISUAL='nano'"
+                create=yes
+
+- name:         Hostname zetten
+  hostname:     name={{ inventory_hostname }}
+
+- lineinfile:   dest=/etc/hosts
+                line="127.0.0.1 {{ inventory_hostname }}"
+  when:         "'directadmin' not in group_names"
+
+- lineinfile:   dest=/etc/hosts
+                line="127.0.0.1 {{ inventory_hostname }}"
+                state=absent
+  when:         "'directadmin' in group_names"
+
+- lineinfile:   dest=/etc/hosts
+                line="{{ ansible_default_ipv4.address }} {{ inventory_hostname }}"
+  when:         "'directadmin' in group_names"
+
+- include:      n2.yml
+
+- name:         Controleren of lockrun bestaat
+  stat:         path=/usr/local/bin/lockrun
+  register:     lockrun_installed
+
+- include:      lockrun.yml
+  when:         lockrun_installed.stat.exists == false and ansible_distribution == "CentOS"
+
+- include:      ntp.yml
+  when:         ansible_distribution == "CentOS"

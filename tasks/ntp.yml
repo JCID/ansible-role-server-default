@@ -1,0 +1,13 @@
+---
+- yum:      name=ntp
+            state=present
+  register: ntp_installation
+
+- name:     Update NTP pool
+  shell:    /usr/sbin/ntpdate -u pool.ntp.org
+  when:     ntp_installation.changed
+
+- name:     NTP service enabled
+  service:  name=ntpd
+            enabled=yes
+            state=started

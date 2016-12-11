@@ -1,0 +1,20 @@
+---
+- name:     Install gcc
+  yum:      name=gcc
+            state=present
+
+- name:     Lockrun downloaden
+  get_url:  url=http://www.unixwiz.net/tools/lockrun.c
+            dest=/root/
+
+- name:     Lockrun compilen
+  shell:    gcc lockrun.c -o lockrun
+            chdir=/root/
+
+- name:     Lockrun in bin plaatsen
+  shell:    mv /root/lockrun /usr/local/bin/
+
+# Heeft gcc lib nodig ..
+- name:     Lockrun file verwijderen
+  file:     path=/root/lockrun.c
+            state=absent

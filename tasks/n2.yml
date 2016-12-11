@@ -1,0 +1,10 @@
+---
+- name:         Verwijderen N2 | CentOS
+  yum:          name=n2txd
+                state=absent
+  when:         ansible_distribution == "CentOS"
+
+- name:         Verwijderen N2 | Ubuntu
+  apt:          name=n2txd
+                state=absent
+  when:         ansible_distribution == "Ubuntu"
